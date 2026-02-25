@@ -45,6 +45,14 @@ def compute_yield_parameter(mmed:np.ndarray, mdm:np.ndarray, gq:np.ndarray, gdm:
     yield_parameter = (epsilon_coupling**2) * alpha_D * (mdm / mmed)**4
     return yield_parameter
 
+def yield_parameter_given_eps_squared(mmed:np.ndarray ,mdm:np.ndarray, eps_squared:np.ndarray, gdm:float=1.0)->np.ndarray:
+    # safety check for input shapes
+    assert mmed.shape == mdm.shape == eps_squared.shape, "mmed, mdm and gq arrays must have the same shape"
+    # compute the yield parameter y = epsilon^2 * alpha_D * (m_DM/m_med)^4
+    alpha_D = gdm**2 / (4. * np.pi)
+    yield_parameter = eps_squared * alpha_D * (mdm / mmed)**4
+    return yield_parameter
+
 def get_arguments():
     import argparse
     parser = argparse.ArgumentParser(
