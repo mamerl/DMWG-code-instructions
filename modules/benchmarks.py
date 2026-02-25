@@ -32,6 +32,7 @@ benchmarks = {
         "plot_parameters": {
             "mdm_label": r"$m_{\mathrm{DM}} = m_{Z'}/3$",
             "coupling_label": r"$g_{\mathrm{DM}} = 1.0$, $g_{\ell} = 0.0$",
+            "name": r"$Z_D \rightarrow q \bar{q}$",
         }
     }
 }
