@@ -25,13 +25,14 @@ ALPHA_FINE_STRUCTURE = 1/137.035999084 # dimensionless
 # TODO revise this calculation after feedback on the derivation of the formula
 def calculate_epsilon(mmed:np.ndarray, gq:np.ndarray)->np.ndarray:
     avg_Q2 = 1./3. # approximate
-    avg_Y2 = 13./18. # approximate 
+    # avg_Y2 = 13./18. # approximate, from CMS dark sectors paper
+    avg_Y2 = 13./72. # revised approximation, based on Q = T3 + Y, not Q = T3 + Y/2
 
     delta_z = (mmed / Z_MASS)**2
     cos2_theta_w = 1. - SIN2_THETA_W
     electronic_charge = np.sqrt(4. * np.pi * ALPHA_FINE_STRUCTURE)
 
-    prefactor =  1. / (electronic_charge * (1. / cos2_theta_w) * (1. / np.abs(1. - delta_z)) * ((np.sqrt(avg_Q2) * cos2_theta_w) + (delta_z * np.sqrt(avg_Y2))))
+    prefactor =  1. / (electronic_charge * (1. / cos2_theta_w) * (1. / np.abs(1. - delta_z)) * ((np.sqrt(avg_Q2) * cos2_theta_w) - (delta_z * np.sqrt(avg_Y2))))
     epsilon = gq * prefactor
     return epsilon
 
@@ -42,6 +43,14 @@ def compute_yield_parameter(mmed:np.ndarray, mdm:np.ndarray, gq:np.ndarray, gdm:
     epsilon_coupling = calculate_epsilon(mmed, gq)
     alpha_D = gdm**2 / (4. * np.pi)
     yield_parameter = (epsilon_coupling**2) * alpha_D * (mdm / mmed)**4
+    return yield_parameter
+
+def yield_parameter_given_eps_squared(mmed:np.ndarray ,mdm:np.ndarray, eps_squared:np.ndarray, gdm:float=1.0)->np.ndarray:
+    # safety check for input shapes
+    assert mmed.shape == mdm.shape == eps_squared.shape, "mmed, mdm and gq arrays must have the same shape"
+    # compute the yield parameter y = epsilon^2 * alpha_D * (m_DM/m_med)^4
+    alpha_D = gdm**2 / (4. * np.pi)
+    yield_parameter = eps_squared * alpha_D * (mdm / mmed)**4
     return yield_parameter
 
 def get_arguments():
